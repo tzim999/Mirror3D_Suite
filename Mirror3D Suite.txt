@@ -1,0 +1,105 @@
+Mirror3D Suite
+
+The Mirror3D Suite is a three-part Python toolkit for reconstructing and visualizing 3-dimensional motion using video of objects floating above a mirror.
+It tracks mirrored object pairs, computes relative depth (Z) calculated from the distance between the object and it's reflection measured from the optical center, cleans noisy data, and produces a rotating 3D "movie cube" visualization.
+All programs share a common configuration file, mirror3d_config.ini, loaded through mirror3d_config.py for consistent parameter control.
+
+------------------------------------------------------------
+
+Components
+
+mirror3d_tracker.py
+Tracks mirrored object pairs in a video to estimate 3D positions based on optical geometry.
+Provides a live Tkinter GUI to adjust parameters such as threshold, area, and velocity in real time.
+Outputs raw tracking data as a CSV file for later processing.
+
+[tracker]
+output_csv = ./output/mirror3d_track_raw.csv
+
+------------------------------------------------------------
+
+mirror3d_cleaner.py
+Reads the raw tracking data and smooths noisy values.
+Removes outliers based on motion and velocity thresholds to create a clean, analysis-ready dataset.
+The cleaner smooths and filters raw tracking data based on the .ini settings.
+
+[cleaner]
+input_csv  = ./output/mirror3d_track_raw.csv
+output_csv = ./output/mirror3d_track_clean.csv
+
+------------------------------------------------------------
+
+mirror3d_movie.py
+Creates a 3D animated visualization (rotating cube view) from the cleaned data.
+Renders color-coded motion trails over time and saves the animation as an MP4 video.
+The movie program renders a rotating 3D animation of the cleaned tracking data based on the .ini settings.
+
+[movie]
+input_csv  = ./output/mirror3d_track_clean.csv
+output_mp4 = ./output/mirror3d_plot_movie.mp4
+
+------------------------------------------------------------
+
+Installation
+
+Prerequisites:
+- Python 3.9+
+- Recommended environment: Anaconda
+- Required packages:
+  pip install numpy matplotlib opencv-python pillow
+
+------------------------------------------------------------
+
+Directory Structure
+
+Mirror3D/
+├── mirror3d_config.py
+├── mirror3d_config.ini
+├── mirror3d_tracker.py
+├── mirror3d_cleaner.py
+├── mirror3d_movie.py
+├── videos/              (input videos, optional)
+├── output/              (CSV and MP4 output files)
+└── README.txt
+
+Note: Each script automatically creates the 'videos' and 'output' directories if they don’t exist.
+
+------------------------------------------------------------
+
+Usage
+
+1. Edit configuration
+   Open mirror3d_config.ini and set the desired paths and parameters for your input video, thresholds, and output filenames.
+
+2. Run the tracker
+   python mirror3d_tracker.py
+   Adjust parameters in the on-screen GUI until tracking looks stable.
+   Variables can be adjusted live while the tracker runs.
+   When the program finishes, it saves the CSV file and prints the final variable values.
+   To apply those settings consistently for a full run, update them in mirror3d_config.ini and rerun the tracker without changing parameters during execution.
+   The program saves raw results to ./output/mirror3d_track_raw.csv.
+
+3. Clean the data
+   python mirror3d_cleaner.py
+   The cleaner smooths and filters raw tracking data based on the .ini settings.
+   This generates ./output/mirror3d_track_clean.csv.
+
+4. Generate the movie
+   python mirror3d_movie.py
+   The movie program renders a rotating 3D animation of the cleaned tracking data based on the .ini settings.
+   Produces ./output/mirror3d_plot_movie.mp4, a rotating 3D animation of the motion trails.
+
+------------------------------------------------------------
+
+Notes
+
+- All paths and parameters are centralized in mirror3d_config.ini.
+- mirror3d_movie.py supports adjustable rotation speed, number of trails, frame rate, and zoom factor.
+- Each component can be run independently if its input file already exists.
+
+------------------------------------------------------------
+
+License
+
+MIT License © 2025 Thomas Zimmerman
+See https://opensource.org/licenses/MIT for full text.
